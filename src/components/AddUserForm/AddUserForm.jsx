@@ -27,8 +27,8 @@ export default function AddUserForm() {
           className='rounded-lg border-2 border-zinc-900 py-1 px-2'
         />
       </div>
-      <div className='flex justify-center content-center flex-wrap'>
-        <button className='border-2 border-zinc-900 bg-zinc-900 text-white py-2 px-4 text-lg rounded-lg hover:bg-white hover:text-zinc-900 transition-colors duration-200'>
+      <div className='flex flex-wrap content-center justify-center'>
+        <button className='rounded-lg border-2 border-zinc-900 bg-zinc-900 py-2 px-4 text-lg text-white transition-colors duration-200 hover:bg-white hover:text-zinc-900'>
           Add User
         </button>
       </div>
