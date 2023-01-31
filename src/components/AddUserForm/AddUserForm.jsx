@@ -67,7 +67,7 @@ export default function AddUserForm(props) {
   };
 
   return (
-    <div>
+    <>
       <form
         onSubmit={submitUserHandler}
         className='grid grid-cols-1 gap-4 sm:grid-cols-2'
@@ -121,6 +121,6 @@ export default function AddUserForm(props) {
       ) : (
         ''
       )}
-    </div>
+    </>
   );
 }
