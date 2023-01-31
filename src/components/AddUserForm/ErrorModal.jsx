@@ -1,7 +1,8 @@
 export default function ErrorModal(props) {
   return (
-    <div className='fixed inset-0 z-10 grid place-content-center bg-zinc-900'>
-      <div className='grid h-full w-full place-content-center gap-4 rounded-lg bg-white p-8'>
+    <div>
+      <div className='z-1 fixed inset-0 h-full w-full bg-zinc-900 opacity-50'></div>
+      <div className='z-2 fixed inset-1/4 grid h-1/4 w-1/2 place-content-center gap-4 rounded-lg bg-white p-8 shadow-lg'>
         <h2 className='text-center text-3xl font-semibold uppercase text-red-500'>
           Error
         </h2>
