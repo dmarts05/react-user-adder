@@ -1,6 +1,6 @@
 import Card from './components/UI/Card';
-import AddUserForm from './components/AddUserForm/AddUserForm';
 import Users from './components/Users/Users';
+import AddUserForm from './components/AddUser/AddUserForm';
 import { useState } from 'react';
 
 export default function App() {

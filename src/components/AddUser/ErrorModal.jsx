@@ -15,7 +15,7 @@ function ModalOverlay(props) {
       <h2 className='text-center text-3xl font-semibold uppercase text-red-500'>
         Error
       </h2>
-      <p>{props.children}</p>
+      <p>{props.msg}</p>
       <button
         onClick={props.toggleModal}
         className='rounded-lg border-2 border-zinc-900 bg-zinc-900 py-2 px-4 text-lg text-white transition-colors duration-200 hover:bg-white hover:text-zinc-900'
@@ -34,7 +34,7 @@ export default function ErrorModal(props) {
         document.getElementById('backdrop-root')
       )}
       {createPortal(
-        <ModalOverlay toggleModal={props.toggleModal} />,
+        <ModalOverlay msg={props.msg} toggleModal={props.toggleModal} />,
         document.getElementById('overlay-root')
       )}
     </>

@@ -1,17 +1,18 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import FormControl from './FormControl';
 import ErrorModal from './ErrorModal';
 
 export default function AddUserForm(props) {
+  const usernameInputRef = useRef();
+  const ageInputRef = useRef();
+
   const [isValid, setIsValid] = useState({ username: false, age: false });
   const [showModal, setShowModal] = useState(false);
-  const [username, setUsername] = useState('');
-  const [age, setAge] = useState('');
 
   const checkUsernameIsValid = (username) => username.length > 0;
 
-  const usernameChangeHandler = (e) => {
-    if (checkUsernameIsValid(e.target.value)) {
+  const usernameChangeHandler = () => {
+    if (checkUsernameIsValid(usernameInputRef.current.value)) {
       setIsValid((prev) => {
         return { ...prev, username: true };
       });
@@ -20,16 +21,14 @@ export default function AddUserForm(props) {
         return { ...prev, username: false };
       });
     }
-
-    setUsername(e.target.value);
   };
 
   const checkAgeIsValid = (age) => {
     return age > 0 && age <= 130;
   };
 
-  const ageChangeHandler = (e) => {
-    if (checkAgeIsValid(+e.target.value)) {
+  const ageChangeHandler = () => {
+    if (checkAgeIsValid(+ageInputRef.current.value)) {
       setIsValid((prev) => {
         return { ...prev, age: true };
       });
@@ -38,8 +37,6 @@ export default function AddUserForm(props) {
         return { ...prev, age: false };
       });
     }
-
-    setAge(e.target.value);
   };
 
   const toggleModal = () => {
@@ -58,12 +55,16 @@ export default function AddUserForm(props) {
       }
     }
 
-    // Reset form
-    setIsValid({ username: false, age: false });
-    setUsername('');
-    setAge('');
+    // Add new user
+    props.addNewUser({
+      username: usernameInputRef.current.value,
+      age: +ageInputRef.current.value,
+    });
 
-    props.addNewUser({ username, age });
+    // Reset form
+    usernameInputRef.current.value = '';
+    ageInputRef.current.value = '';
+    setIsValid({ username: false, age: false });
   };
 
   return (
@@ -80,7 +81,7 @@ export default function AddUserForm(props) {
             type='text'
             name='username'
             id='username'
-            value={username}
+            ref={usernameInputRef}
             placeholder='Name'
             onChange={usernameChangeHandler}
             className={`rounded-lg border-2 ${
@@ -96,7 +97,7 @@ export default function AddUserForm(props) {
             type='number'
             name='age'
             id='age'
-            value={age}
+            ref={ageInputRef}
             placeholder='18'
             onChange={ageChangeHandler}
             className={`rounded-lg border-2 ${
@@ -111,13 +112,15 @@ export default function AddUserForm(props) {
         </div>
       </form>
       {showModal && !isValid.username ? (
-        <ErrorModal toggleModal={toggleModal}>
-          You must enter a username
-        </ErrorModal>
+        <ErrorModal
+          msg='You must enter a username.'
+          toggleModal={toggleModal}
+        />
       ) : showModal && !isValid.age ? (
-        <ErrorModal toggleModal={toggleModal}>
-          You must enter an age between 1 and 130
-        </ErrorModal>
+        <ErrorModal
+          msg='You must enter an age between 1 and 130.'
+          toggleModal={toggleModal}
+        />
       ) : (
         ''
       )}
