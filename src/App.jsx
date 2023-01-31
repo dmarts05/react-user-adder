@@ -4,7 +4,7 @@ import Users from './components/Users/Users';
 
 export default function App() {
   return (
-    <div className='flex h-screen w-screen flex-col flex-wrap content-center bg-zinc-900 py-8 gap-8'>
+    <div className='flex h-screen w-screen flex-col flex-wrap content-center gap-8 bg-zinc-900 py-8'>
       <Card>
         <AddUserForm />
       </Card>
