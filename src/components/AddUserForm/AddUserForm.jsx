@@ -12,7 +12,6 @@ export default function AddUserForm(props) {
 
   const usernameChangeHandler = (e) => {
     if (checkUsernameIsValid(e.target.value)) {
-      setUsername(e.target.value);
       setIsValid((prev) => {
         return { ...prev, username: true };
       });
@@ -21,6 +20,8 @@ export default function AddUserForm(props) {
         return { ...prev, username: false };
       });
     }
+
+    setUsername(e.target.value);
   };
 
   const checkAgeIsValid = (age) => {
@@ -29,7 +30,6 @@ export default function AddUserForm(props) {
 
   const ageChangeHandler = (e) => {
     if (checkAgeIsValid(+e.target.value)) {
-      setAge(e.target.value);
       setIsValid((prev) => {
         return { ...prev, age: true };
       });
@@ -38,6 +38,8 @@ export default function AddUserForm(props) {
         return { ...prev, age: false };
       });
     }
+
+    setAge(e.target.value);
   };
 
   const toggleModal = () => {
@@ -56,6 +58,11 @@ export default function AddUserForm(props) {
       }
     }
 
+    // Reset form
+    setIsValid({ username: false, age: false });
+    setUsername('');
+    setAge('');
+
     props.addNewUser({ username, age });
   };
 
@@ -73,6 +80,7 @@ export default function AddUserForm(props) {
             type='text'
             name='username'
             id='username'
+            value={username}
             placeholder='Name'
             onChange={usernameChangeHandler}
             className={`rounded-lg border-2 ${
@@ -88,6 +96,7 @@ export default function AddUserForm(props) {
             type='number'
             name='age'
             id='age'
+            value={age}
             placeholder='18'
             onChange={ageChangeHandler}
             className={`rounded-lg border-2 ${
