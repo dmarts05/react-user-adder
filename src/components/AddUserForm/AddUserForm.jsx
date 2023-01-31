@@ -1,7 +1,9 @@
+import FormControl from './FormControl';
+
 export default function AddUserForm() {
   return (
-    <form action='' className='flex flex-col gap-4'>
-      <div className='flex flex-col gap-2'>
+    <form action='' className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+      <FormControl>
         <label htmlFor='username' className='text-lg font-semibold'>
           Username
         </label>
@@ -9,11 +11,11 @@ export default function AddUserForm() {
           type='text'
           name='username'
           id='username'
-          placeholder='John'
+          placeholder='Name'
           className='rounded-lg border-2 border-zinc-900 py-1 px-2'
         />
-      </div>
-      <div className='flex flex-col gap-2'>
+      </FormControl>
+      <FormControl>
         <label htmlFor='age' className='text-lg font-semibold'>
           Age{' '}
         </label>
@@ -26,8 +28,8 @@ export default function AddUserForm() {
           placeholder='18'
           className='rounded-lg border-2 border-zinc-900 py-1 px-2'
         />
-      </div>
-      <div className='flex flex-wrap content-center justify-center'>
+      </FormControl>
+      <div className='col-span-full flex flex-wrap content-center justify-center'>
         <button className='rounded-lg border-2 border-zinc-900 bg-zinc-900 py-2 px-4 text-lg text-white transition-colors duration-200 hover:bg-white hover:text-zinc-900'>
           Add User
         </button>
