@@ -1,42 +1,47 @@
-import { useRef, useState } from 'react';
+import { useReducer, useState } from 'react';
 import FormControl from './FormControl';
 import ErrorModal from './ErrorModal';
 
-export default function AddUserForm(props) {
-  const usernameInputRef = useRef();
-  const ageInputRef = useRef();
+const formReducer = (state, action) => {
+  switch (action.type) {
+    case 'USERNAME_INPUT':
+      return {
+        ...state,
+        usernameValue: action.value,
+        isUsernameValid: action.value.length > 0,
+      };
+    case 'AGE_INPUT':
+      return {
+        ...state,
+        ageValue: action.value,
+        isAgeValid: +action.value > 0 && +action.value <= 130,
+      };
+    default:
+      return {
+        usernameValue: '',
+        isUsernameValid: false,
+        ageValue: '',
+        isAgeValid: false,
+      };
+  }
+};
 
-  const [isValid, setIsValid] = useState({ username: false, age: false });
+export default function AddUserForm(props) {
   const [showModal, setShowModal] = useState(false);
 
-  const checkUsernameIsValid = (username) => username.length > 0;
+  const [formState, dispatchForm] = useReducer(formReducer, {
+    usernameValue: '',
+    isUsernameValid: false,
+    ageValue: '',
+    isAgeValid: false,
+  });
 
-  const usernameChangeHandler = () => {
-    if (checkUsernameIsValid(usernameInputRef.current.value)) {
-      setIsValid((prev) => {
-        return { ...prev, username: true };
-      });
-    } else {
-      setIsValid((prev) => {
-        return { ...prev, username: false };
-      });
-    }
+  const usernameChangeHandler = (e) => {
+    dispatchForm({ type: 'USERNAME_INPUT', value: e.target.value });
   };
 
-  const checkAgeIsValid = (age) => {
-    return age > 0 && age <= 130;
-  };
-
-  const ageChangeHandler = () => {
-    if (checkAgeIsValid(+ageInputRef.current.value)) {
-      setIsValid((prev) => {
-        return { ...prev, age: true };
-      });
-    } else {
-      setIsValid((prev) => {
-        return { ...prev, age: false };
-      });
-    }
+  const ageChangeHandler = (e) => {
+    dispatchForm({ type: 'AGE_INPUT', value: e.target.value });
   };
 
   const toggleModal = () => {
@@ -46,25 +51,19 @@ export default function AddUserForm(props) {
   const submitUserHandler = (e) => {
     e.preventDefault();
 
-    // Check that every condition has been met
-    for (const condition in isValid) {
-      if (!isValid[condition]) {
-        // Show error modal
-        toggleModal();
-        return;
-      }
+    if (!formState.isUsernameValid || !formState.isAgeValid) {
+      // Form is not valid, show error modal
+      toggleModal();
+    } else {
+      // Form is valid, add new user
+      props.addNewUser({
+        username: formState.usernameValue,
+        age: +formState.ageValue,
+      });
+
+      // Reset form
+      dispatchForm({ type: 'RESET_FORM' });
     }
-
-    // Add new user
-    props.addNewUser({
-      username: usernameInputRef.current.value,
-      age: +ageInputRef.current.value,
-    });
-
-    // Reset form
-    usernameInputRef.current.value = '';
-    ageInputRef.current.value = '';
-    setIsValid({ username: false, age: false });
   };
 
   return (
@@ -81,11 +80,11 @@ export default function AddUserForm(props) {
             type='text'
             name='username'
             id='username'
-            ref={usernameInputRef}
             placeholder='Name'
+            value={formState.usernameValue}
             onChange={usernameChangeHandler}
             className={`rounded-lg border-2 ${
-              isValid.username ? 'border-zinc-900' : 'border-red-500'
+              formState.isUsernameValid ? 'border-zinc-900' : 'border-red-500'
             } border-zinc-900 py-1 px-2`}
           />
         </FormControl>
@@ -97,11 +96,11 @@ export default function AddUserForm(props) {
             type='number'
             name='age'
             id='age'
-            ref={ageInputRef}
             placeholder='18'
+            value={formState.ageValue}
             onChange={ageChangeHandler}
             className={`rounded-lg border-2 ${
-              isValid.age ? 'border-zinc-900' : 'border-red-500'
+              formState.isAgeValid ? 'border-zinc-900' : 'border-red-500'
             } border-zinc-900 py-1 px-2`}
           />
         </FormControl>
@@ -111,12 +110,12 @@ export default function AddUserForm(props) {
           </button>
         </div>
       </form>
-      {showModal && !isValid.username ? (
+      {showModal && !formState.isUsernameValid ? (
         <ErrorModal
           msg='You must enter a username.'
           toggleModal={toggleModal}
         />
-      ) : showModal && !isValid.age ? (
+      ) : showModal && !formState.isAgeValid ? (
         <ErrorModal
           msg='You must enter an age between 1 and 130.'
           toggleModal={toggleModal}
