@@ -2,46 +2,28 @@ import { useReducer, useState } from 'react';
 import FormControl from './FormControl';
 import ErrorModal from './ErrorModal';
 
-const formReducer = (state, action) => {
-  switch (action.type) {
-    case 'USERNAME_INPUT':
-      return {
-        ...state,
-        usernameValue: action.value,
-        isUsernameValid: action.value.length > 0,
-      };
-    case 'AGE_INPUT':
-      return {
-        ...state,
-        ageValue: action.value,
-        isAgeValid: +action.value > 0 && +action.value <= 130,
-      };
-    default:
-      return {
-        usernameValue: '',
-        isUsernameValid: false,
-        ageValue: '',
-        isAgeValid: false,
-      };
-  }
-};
+import { INITIAL_STATE, formReducer } from './formReducer';
+import { ACTION_TYPES } from './formActionTypes';
 
 export default function AddUserForm(props) {
   const [showModal, setShowModal] = useState(false);
 
-  const [formState, dispatchForm] = useReducer(formReducer, {
-    usernameValue: '',
-    isUsernameValid: false,
-    ageValue: '',
-    isAgeValid: false,
-  });
+  const [formState, dispatchForm] = useReducer(formReducer, INITIAL_STATE);
 
   const usernameChangeHandler = (e) => {
-    dispatchForm({ type: 'USERNAME_INPUT', value: e.target.value });
+    dispatchForm({ type: ACTION_TYPES.CHANGE_USERNAME, value: e.target.value });
+  };
+
+  const usernameBlurHandler = () => {
+    dispatchForm({ type: ACTION_TYPES.BLUR_USERNAME });
   };
 
   const ageChangeHandler = (e) => {
-    dispatchForm({ type: 'AGE_INPUT', value: e.target.value });
+    dispatchForm({ type: ACTION_TYPES.CHANGE_AGE, value: e.target.value });
+  };
+
+  const ageBlurHandler = () => {
+    dispatchForm({ type: ACTION_TYPES.BLUR_AGE });
   };
 
   const toggleModal = () => {
@@ -57,8 +39,8 @@ export default function AddUserForm(props) {
     } else {
       // Form is valid, add new user
       props.addNewUser({
-        username: formState.usernameValue,
-        age: +formState.ageValue,
+        username: formState.username,
+        age: +formState.age,
       });
 
       // Reset form
@@ -81,8 +63,9 @@ export default function AddUserForm(props) {
             name='username'
             id='username'
             placeholder='Name'
-            value={formState.usernameValue}
+            value={formState.username}
             onChange={usernameChangeHandler}
+            onBlur={usernameBlurHandler}
             className={`rounded-lg border-2 ${
               formState.isUsernameValid ? 'border-zinc-900' : 'border-red-500'
             } border-zinc-900 py-1 px-2`}
@@ -90,15 +73,16 @@ export default function AddUserForm(props) {
         </FormControl>
         <FormControl>
           <label htmlFor='age' className='text-lg font-semibold'>
-            Age{' '}
+            Age
           </label>
           <input
             type='number'
             name='age'
             id='age'
             placeholder='18'
-            value={formState.ageValue}
+            value={formState.age}
             onChange={ageChangeHandler}
+            onBlur={ageBlurHandler}
             className={`rounded-lg border-2 ${
               formState.isAgeValid ? 'border-zinc-900' : 'border-red-500'
             } border-zinc-900 py-1 px-2`}
